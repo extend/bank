@@ -66,7 +66,7 @@ stop(ServerPid) ->
 %% @doc Run a batch job using this worker.
 -spec batch(pid(), batch_fun()) -> batch_fun_ret().
 batch(ServerPid, Fun) ->
-	gen_server:call(ServerPid, {batch, Fun}).
+	gen_server:call(ServerPid, {batch, Fun}, infinity).
 
 %% @doc Execute a prepared statement.
 %% @todo Improve list().
@@ -74,7 +74,7 @@ batch(ServerPid, Fun) ->
 	-> {ok, non_neg_integer(), non_neg_integer()}
 	| {rows, [proplists:proplist()]}.
 execute(ServerPid, Stmt, Params) ->
-	gen_server:call(ServerPid, {execute, Stmt, Params}).
+	gen_server:call(ServerPid, {execute, Stmt, Params}, infinity).
 
 %% @doc Setup a prepared statement.
 -spec prepare(pid(), any(), string()) -> ok.

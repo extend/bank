@@ -22,7 +22,7 @@
 -export([batch/2]).
 -export([execute/3]).
 -export([prepare/3]).
--export([sql_query/2]).
+-export([query/2]).
 
 %% gen_server.
 -export([init/1]).
@@ -82,11 +82,11 @@ prepare(ServerPid, Stmt, Query) ->
 	gen_server:call(ServerPid, {prepare, Stmt, Query}).
 
 %% @doc Run a single SQL query using this worker.
--spec sql_query(pid(), string())
+-spec query(pid(), string())
 	-> {ok, non_neg_integer(), non_neg_integer()}
 	| {rows, [proplists:proplist()]}.
-sql_query(ServerPid, Query) ->
-	gen_server:call(ServerPid, {sql_query, Query}, infinity).
+query(ServerPid, Query) ->
+	gen_server:call(ServerPid, {query, Query}, infinity).
 
 %% gen_server.
 
@@ -111,10 +111,10 @@ handle_call({prepare, Stmt, Query}, _From, State=#state{
 		when Driver =/= undefined ->
 	{ok, ClientState2} = Driver:prepare(Stmt, Query, ClientState),
 	{reply, ok, State#state{client_state=ClientState2}};
-handle_call({sql_query, Query}, _From, State=#state{
+handle_call({query, Query}, _From, State=#state{
 		driver=Driver, client_state=ClientState})
 		when Driver =/= undefined ->
-	handle_results(Driver:sql_query(Query, ClientState), State);
+	handle_results(Driver:query(Query, ClientState), State);
 handle_call(stop, _From, State) ->
 	{stop, normal, stopped, State};
 handle_call(_Request, _From, State) ->

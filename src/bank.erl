@@ -21,7 +21,7 @@
 -export([batch/2]).
 -export([execute/3]).
 -export([prepare/3]).
--export([sql_query/2]).
+-export([query/2]).
 
 %% API.
 
@@ -75,9 +75,9 @@ prepare(Ref, Stmt, Query) ->
 	ok.
 
 %% @doc Execute the given SQL query and return the results.
--spec sql_query(any(), string())
+-spec query(any(), string())
 	-> {ok, non_neg_integer(), non_neg_integer()}
 	| {rows, [proplists:proplist()]}.
-sql_query(Ref, Query) ->
+query(Ref, Query) ->
 	WorkerPid = bank_server:get_worker(Ref),
-	bank_worker:sql_query(WorkerPid, Query).
+	bank_worker:query(WorkerPid, Query).

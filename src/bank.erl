@@ -43,6 +43,7 @@ start_pool(Ref, NbWorkers, Opts) when NbWorkers > 0 ->
 stop_pool(Ref) ->
 	case supervisor:terminate_child(bank_sup, {bank_workers_sup, Ref}) of
 		ok ->
+			bank_server:remove_pool(Ref),
 			supervisor:delete_child(bank_sup, {bank_workers_sup, Ref});
 		{error, Reason} ->
 			{error, Reason}
